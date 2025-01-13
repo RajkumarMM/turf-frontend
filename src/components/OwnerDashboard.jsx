@@ -21,7 +21,7 @@ function OwnerDashboard() {
     }
 
     try {
-        const response = await axios.get('http://localhost:5000/api/getOwnerTurfs', {
+        const response = await axios.get('https://turf-backend-o0i0.onrender.com/api/getOwnerTurfs', {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -47,7 +47,7 @@ function OwnerDashboard() {
     }
 
     try {
-        await axios.post('http://localhost:5000/api/registerTurf', turfData, {
+        await axios.post('https://turf-backend-o0i0.onrender.com/api/registerTurf', turfData, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
