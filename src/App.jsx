@@ -1,9 +1,15 @@
 import React, { createContext, useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import Auth from "./components/Auth";
 import UserDashboard from "./components/UserDashboard";
 import OwnerDashboard from "./components/OwnerDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import RegisterTurf from "./components/RegisterTurf";
 
 // Create Auth Context
 export const AuthContext = createContext();
@@ -58,6 +64,14 @@ const App = () => {
             element={
               <ProtectedRoute role="owner">
                 <OwnerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/register-turf"
+            element={
+              <ProtectedRoute role="owner">
+                <RegisterTurf onSubmit={handleRegisterTurf} />
               </ProtectedRoute>
             }
           />

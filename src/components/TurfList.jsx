@@ -13,6 +13,7 @@ const TurfList = ({ turfs }) => {
                             <th>Location</th>
                             <th>Price (₹)</th>
                             <th>Timings</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -22,7 +23,7 @@ const TurfList = ({ turfs }) => {
                                 <td>{turf.name}</td>
                                 <td>{turf.location}</td>
                                 <td>{turf.price}</td>
-                                <td>
+                                <td> 
     {turf.timings && turf.timings.length > 0 ? (
         turf.timings.map((time, i) => (
             <span
@@ -37,6 +38,20 @@ const TurfList = ({ turfs }) => {
         <span className="text-muted">No timings available</span>
     )}
 </td>
+<td>
+                  <button
+                    className="btn btn-warning btn-sm me-2"
+                    // onClick={() => navigate(`/edit-turf/${turf._id}`)} // Navigate to edit page
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    // onClick={() => onDelete(turf._id)}
+                  >
+                    Delete
+                  </button>
+                </td>
 
                             </tr>
                         ))}

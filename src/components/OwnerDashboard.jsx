@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import RegisterTurf from './RegisterTurf';
 import TurfList from './TurfList';
 import axios from 'axios';
 import Button from "@mui/material/Button";
@@ -38,26 +37,6 @@ function OwnerDashboard() {
   useEffect(() => {
       fetchTurfs();
   }, []);
-
-  const handleRegisterTurf = async (turfData) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/auth"); // Redirect to login if token is not found
-      return;
-    }
-
-    try {
-        await axios.post('https://turf-backend-o0i0.onrender.com/api/registerTurf', turfData, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        fetchTurfs(); // Refresh the list of turfs after registration
-    } catch (error) {
-        console.error('Error registering turf:', error.response?.data || error.message);
-        alert("Failed to register turf. Please try again.");
-    }
-  };
 
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
@@ -98,7 +77,14 @@ function OwnerDashboard() {
           Logout
         </Button>
       </div>
-      <RegisterTurf onSubmit={handleRegisterTurf} />
+      <Button
+            variant="contained"
+            color="primary"
+            className="mb-2"
+            onClick={() => navigate("/register-turf")}
+          >
+            Register Turf
+          </Button>
       <TurfList turfs={turfs} />
     </div>
   );
