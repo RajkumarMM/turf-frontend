@@ -71,7 +71,7 @@ const App = () => {
             path="/register-turf"
             element={
               <ProtectedRoute role="owner">
-                <RegisterTurf onSubmit={handleRegisterTurf} />
+                <RegisterTurf />
               </ProtectedRoute>
             }
           />
