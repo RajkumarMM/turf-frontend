@@ -1,4 +1,29 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
 const TurfList = ({ turfs }) => {
+    const navigate = useNavigate();
+
+    const onEdit = (id) => {
+        navigate(`/edit-turf/${id}`); // Redirect to edit page
+    };
+
+    const onDelete = async (id) => {
+        const confirmDelete = window.confirm('Are you sure you want to delete this turf?');
+        if (!confirmDelete) return;
+
+        try {
+            await axios.delete(`https://turf-backend-o0i0.onrender.com/api/turfs/${id}`);
+            alert('Turf deleted successfully');
+            window.location.reload(); // Refresh the page or update state
+        } catch (error) {
+            console.error('Error deleting turf:', error.message);
+            alert('Error deleting turf');
+        }
+    };
+    
+
     return (
         <div className="mt-5">
             <h2>Your Turfs</h2>
@@ -23,36 +48,35 @@ const TurfList = ({ turfs }) => {
                                 <td>{turf.name}</td>
                                 <td>{turf.location}</td>
                                 <td>{turf.price}</td>
-                                <td> 
-    {turf.timings && turf.timings.length > 0 ? (
-        turf.timings.map((time, i) => (
-            <span
-                key={i}
-                className="badge badge-info mx-1"
-                style={{ backgroundColor: "#17a2b8", color: "#fff" }}
-            >
-                {time}
-            </span>
-        ))
-    ) : (
-        <span className="text-muted">No timings available</span>
-    )}
-</td>
-<td>
-                  <button
-                    className="btn btn-warning btn-sm me-2"
-                    // onClick={() => navigate(`/edit-turf/${turf._id}`)} // Navigate to edit page
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    // onClick={() => onDelete(turf._id)}
-                  >
-                    Delete
-                  </button>
-                </td>
-
+                                <td>
+                                    {turf.timings && turf.timings.length > 0 ? (
+                                        turf.timings.map((time, i) => (
+                                            <span
+                                                key={i}
+                                                className="badge badge-info mx-1"
+                                                style={{ backgroundColor: '#17a2b8', color: '#fff' }}
+                                            >
+                                                {time}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span className="text-muted">No timings available</span>
+                                    )}
+                                </td>
+                                <td>
+                                    <button
+                                        className="btn btn-warning btn-sm me-2"
+                                        onClick={() => onEdit(turf._id)}
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() => onDelete(turf._id)}
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

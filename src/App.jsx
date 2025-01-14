@@ -10,6 +10,7 @@ import UserDashboard from "./components/UserDashboard";
 import OwnerDashboard from "./components/OwnerDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RegisterTurf from "./components/RegisterTurf";
+import EditTurf from "./components/EditTurf";
 
 // Create Auth Context
 export const AuthContext = createContext();
@@ -72,6 +73,14 @@ const App = () => {
             element={
               <ProtectedRoute role="owner">
                 <RegisterTurf />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-turf/:id"
+            element={
+              <ProtectedRoute role="owner">
+                <EditTurf />
               </ProtectedRoute>
             }
           />
