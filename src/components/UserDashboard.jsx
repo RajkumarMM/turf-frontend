@@ -2,11 +2,10 @@ import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Box } from "@mui/material";
+import { Box, ButtonBase } from "@mui/material";
 import { SportsSoccer, Grass } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress"; // Added for better loading experience
 import { AuthContext } from "../App";
@@ -70,7 +69,10 @@ const UserDashboard = () => {
       alert("Logout canceled.");
     }
   };
-  
+  // card navigation
+  const handleCardClick = (type) => {
+    navigate(`/user-dashboard/${type}`); // Navigate to a dynamic route
+  };
 
   if (loading) {
     return (
@@ -91,6 +93,7 @@ const UserDashboard = () => {
 
       {data ? (
         <div className="mt-5 d-flex justify-content-around align-items-center">
+          <ButtonBase onClick={() => handleCardClick("turfs")} >
           <Card sx={{ minWidth: 275, textAlign: "center", borderTop: "5px solid blue", padding: "10px 0px" }}>
             <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
               <Grass sx={{ fontSize: 50, color: "blue" }} />
@@ -104,7 +107,8 @@ const UserDashboard = () => {
               </Typography>
             </Box>
           </Card>
-
+          </ButtonBase>
+          <ButtonBase onClick={() => handleCardClick("players")} >
           <Card sx={{ minWidth: 275, textAlign: "center", borderTop: "5px solid blue", padding: "10px 0px" }}>
             <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
               <SportsSoccer sx={{ fontSize: 50, color: "blue" }} />
@@ -118,6 +122,7 @@ const UserDashboard = () => {
               </Typography>
             </Box>
           </Card>
+          </ButtonBase>
         </div>
       ) : (
         <p>No data available.</p>

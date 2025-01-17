@@ -11,6 +11,8 @@ import OwnerDashboard from "./components/OwnerDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RegisterTurf from "./components/RegisterTurf";
 import EditTurf from "./components/EditTurf";
+import Turfs from "./components/user-dashboard/Turfs";
+import Players from "./components/user-dashboard/Players";
 
 // Create Auth Context
 export const AuthContext = createContext();
@@ -58,6 +60,23 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/user-dashboard/turfs"
+            element={
+              <ProtectedRoute role="player">
+                <Turfs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/user-dashboard/players"
+            element={
+              <ProtectedRoute role="player">
+                <Players />
+              </ProtectedRoute>
+            }
+          />
+          
 
           {/* Owner Dashboard with role-based protection */}
           <Route
