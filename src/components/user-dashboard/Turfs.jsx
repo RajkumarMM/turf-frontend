@@ -50,6 +50,19 @@ const Turfs = () => {
                 <h4 className="text-center text-decoration-underline">{turf.name}</h4>
                 <h5>Location: {turf.location}</h5>
                 <h5>Price: {turf.price} per hour</h5>
+                <h5>Timings: {turf.timings && turf.timings.length > 0 ? (
+                                        turf.timings.map((time, i) => (
+                                            <span
+                                                key={i}
+                                                className="badge badge-info mx-1"
+                                                style={{ backgroundColor: '#17a2b8', color: '#fff' }}
+                                            >
+                                                {time}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span className="text-muted">No timings available</span>
+                                    )}</h5>
               </CardContent>
             </Card>
           ))
