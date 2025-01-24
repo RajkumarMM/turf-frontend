@@ -37,7 +37,7 @@ const TurfList = ({ turfs }) => {
                             <th>Turf Name</th>
                             <th>Location</th>
                             <th>Price (₹)</th>
-                            <th>Timings</th>
+                            <th>slots</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -49,20 +49,24 @@ const TurfList = ({ turfs }) => {
                                 <td>{turf.location}</td>
                                 <td>{turf.price}</td>
                                 <td>
-                                    {turf.timings && turf.timings.length > 0 ? (
-                                        turf.timings.map((time, i) => (
-                                            <span
-                                                key={i}
-                                                className="badge badge-info mx-1"
-                                                style={{ backgroundColor: '#17a2b8', color: '#fff' }}
-                                            >
-                                                {time}
-                                            </span>
-                                        ))
-                                    ) : (
-                                        <span className="text-muted">No timings available</span>
-                                    )}
-                                </td>
+  {turf.slots && Object.keys(turf.slots).length > 0 ?(
+    Object.keys(turf.slots).map((time, i) => (
+      <span
+        key={i}
+        className="badge badge-info mx-1"
+        style={{
+          backgroundColor: turf.slots[time].isBooked ? '#dc3545' : '#17a2b8', // Red if booked, blue if available
+          color: '#fff',
+        }}
+      >
+        {turf.slots[time].time} - {turf.slots[time].isBooked ? 'Booked' : 'Available'}
+      </span>
+    ))
+  ) : (
+    <span className="text-muted">No slots available</span>
+  )}
+</td>
+
                                 <td>
                                     <button
                                         className="btn btn-warning btn-sm me-2"

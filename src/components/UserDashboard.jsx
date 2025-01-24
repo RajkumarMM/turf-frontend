@@ -5,9 +5,9 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Box, ButtonBase } from "@mui/material";
+import { Box, ButtonBase, TextField, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 import { SportsSoccer, Grass } from "@mui/icons-material";
-import CircularProgress from "@mui/material/CircularProgress"; // Added for better loading experience
+import CircularProgress from "@mui/material/CircularProgress";
 import { AuthContext } from "../App";
  
 
@@ -16,6 +16,14 @@ const UserDashboard = () => {
   const [loading, setLoading] = useState(true); // State for loading
   const navigate = useNavigate(); // React Router's navigation hook
   const { authState, setAuthState } = useContext(AuthContext); // Access the authState and setAuthState from context
+
+  // States for search bar inputs
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [amenities, setAmenities] = useState("");
+  const [priceRange, setPriceRange] = useState("");
+  const [ratings, setRatings] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +82,13 @@ const UserDashboard = () => {
     navigate(`/user-dashboard/${type}`); // Navigate to a dynamic route
   };
 
+   // Search bar handler
+   const handleSearch = () => {
+    // Logic to filter or search based on the selected criteria
+    console.log("Search Criteria:", { location, date, time, amenities, priceRange, ratings });
+    // API call for search can be added here if needed
+  };
+
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
@@ -89,6 +104,78 @@ const UserDashboard = () => {
         <Button variant="contained" color="error" onClick={handleLogout}>
           Logout
         </Button>
+      </div>
+      {/* Search Bar Section */}
+      <div className="mt-4 p-3 bg-light shadow rounded">
+        <h4>Search Turfs</h4>
+        <div className="d-flex flex-wrap justify-content-center gap-3">
+          <TextField
+            label="Location"
+            variant="outlined"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            size="small"
+          />
+          <TextField
+            label="Date"
+            type="date"
+            variant="outlined"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            size="small"
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            label="Time"
+            type="time"
+            variant="outlined"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            size="small"
+            InputLabelProps={{ shrink: true }}
+          />
+          <FormControl size="small" sx={{ minWidth: 120 }}>
+            <InputLabel>Amenities</InputLabel>
+            <Select
+              value={amenities}
+              onChange={(e) => setAmenities(e.target.value)}
+              label="Amenities"
+            >
+              <MenuItem value="Wifi">Cricket</MenuItem>
+              <MenuItem value="Parking">Football</MenuItem>
+              <MenuItem value="Refreshments">Tennis</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl size="small" sx={{ minWidth: 130 }}>
+            <InputLabel>Price Range</InputLabel>
+            <Select
+              value={priceRange}
+              onChange={(e) => setPriceRange(e.target.value)}
+              label="Price Range"
+            >
+              <MenuItem value="Low">Low</MenuItem>
+              <MenuItem value="Medium">Medium</MenuItem>
+              <MenuItem value="High">High</MenuItem>
+            </Select>
+          </FormControl>
+          {/* <FormControl size="small" sx={{ minWidth: 120 }}>
+            <InputLabel>Ratings</InputLabel>
+            <Select
+              value={ratings}
+              onChange={(e) => setRatings(e.target.value)}
+              label="Ratings"
+            >
+              <MenuItem value="1">1 Star</MenuItem>
+              <MenuItem value="2">2 Stars</MenuItem>
+              <MenuItem value="3">3 Stars</MenuItem>
+              <MenuItem value="4">4 Stars</MenuItem>
+              <MenuItem value="5">5 Stars</MenuItem>
+            </Select>
+          </FormControl> */}
+          <Button variant="contained" color="primary" onClick={handleSearch}>
+            Search
+          </Button>
+        </div>
       </div>
 
       {data ? (

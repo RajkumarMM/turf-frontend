@@ -13,6 +13,7 @@ import RegisterTurf from "./components/RegisterTurf";
 import EditTurf from "./components/EditTurf";
 import Turfs from "./components/user-dashboard/Turfs";
 import Players from "./components/user-dashboard/Players";
+import TurfDetails from "./components/user-dashboard/TurfDetails";
 
 // Create Auth Context
 export const AuthContext = createContext();
@@ -103,6 +104,14 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+  path="/user-dashboard/turfs/:id"
+  element={
+    <ProtectedRoute role="player">
+      <TurfDetails />
+    </ProtectedRoute>
+  }
+/>
         </Routes>
       </Router>
     </AuthContext.Provider>
