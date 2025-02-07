@@ -33,10 +33,12 @@ setSlots(response.data.slots || []);
   }, [id]);
 
   const handleSlotBooking = async (slot) => {
+    console.log(slot);
+    
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        `https://turf-backend-o0i0.onrender.com/api/book-slot`, // Adjust endpoint
+        `https://turf-backend-o0i0.onrender.com/api/bookings/book-slot`,
         { turfId: id, slot },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -91,7 +93,7 @@ setSlots(response.data.slots || []);
             disabled={slot.isBooked}
             onClick={() => handleSlotBooking(slot)}
           >
-            {slot.isBooked ? "Booked" : `Slot${index}: ${slot.time}`}
+            {slot.isBooked ? "Booked" : `Slot ${index + 1}: ${slot.time}`}
           </Button>
         ))}
       </div>
