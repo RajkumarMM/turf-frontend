@@ -27,8 +27,16 @@ function OwnerDashboard() {
         });
         setTurfs(response.data);
     } catch (error) {
-        console.error('Error fetching turfs:', error.response?.data || error.message);
-        alert("Failed to load turfs. Please try again.");
+      if (error.response?.status === 401) {
+        // Token expired or invalid, redirect to login
+        localStorage.removeItem("token");
+        alert("Session expired. Please log in again.");
+        navigate("/auth");
+      } else {
+        alert(error.response?.data?.message || "Failed to load dashboard");
+      }
+        // console.error('Error fetching turfs:', error.response?.data || error.message);
+        // alert("Failed to load turfs. Please try again.");
     } finally {
         setLoading(false); // Set loading to false after data is fetched
     }
