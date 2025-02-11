@@ -73,22 +73,19 @@ const Auth = () => {
     <div className="container mt-5">
       <div className="auth-container">
         {/* Form Title */}
+      <div className="d-flex justify-content-between align-items-center mb-3">
         <h2>
           {role === "owner" ? "Owner" : "Player"} {isLogin ? "Login" : "Register"}
         </h2>
 
         {/* Role Selector */}
-        <div className="mb-3">
-          <label>Choose Role:</label>
-          <select
-            className="form-select"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
+        <button
+            className="btn btn-sm btn-primary"
+            onClick={() => setRole(role === "player" ? "owner" : "player")}
           >
-            <option value="player">Player</option>
-            <option value="owner">Owner</option>
-          </select>
-        </div>
+            Switch to {role === "player" ? "Owner" : "Player"}
+          </button>
+          </div>
 
         <form onSubmit={handleSubmit}>
           {/* Name field for registration */}

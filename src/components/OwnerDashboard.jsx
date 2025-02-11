@@ -5,16 +5,27 @@ import Button from "@mui/material/Button";
 import { useNavigate } from 'react-router-dom';
 import CircularProgress from "@mui/material/CircularProgress"; // Loading spinner
 import { AuthContext } from "../App";
+import {jwtDecode} from 'jwt-decode'; // Import jwtDecode to decode JWT tokens
 
 function OwnerDashboard() {
   const [turfs, setTurfs] = useState([]);
   const [loading, setLoading] = useState(true); // State for loading
   const navigate = useNavigate(); // React Router's navigation hook
-  const { authState, setAuthState } = useContext(AuthContext); // Access the authState and setAuthState from context
+  const { authState, setAuthState, logout } = useContext(AuthContext); // Access the authState and setAuthState from context
+
+  // Function to check if token is expired
+    const isTokenExpired = (token) => {
+      try {
+        const decoded = jwtDecode(token);
+        return decoded.exp * 1000 < Date.now(); // Convert expiry to milliseconds
+      } catch (error) {
+        return true; // If decoding fails, assume token is invalid
+      }
+    };
 
   const fetchTurfs = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!authState.token || isTokenExpired(authState.token)) {
+      logout(); // Logout the user if the token is expired
       navigate("/auth"); // Redirect to login if token is not found
       return;
     }
@@ -22,14 +33,14 @@ function OwnerDashboard() {
     try {
         const response = await axios.get('https://turf-backend-o0i0.onrender.com/api/getOwnerTurfs', {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${authState.token}`,
             },
         });
         setTurfs(response.data);
     } catch (error) {
       if (error.response?.status === 401) {
         // Token expired or invalid, redirect to login
-        localStorage.removeItem("token");
+        logout();
         alert("Session expired. Please log in again.");
         navigate("/auth");
       } else {
@@ -44,23 +55,13 @@ function OwnerDashboard() {
 
   useEffect(() => {
       fetchTurfs();
-  }, []);
+  }, [authState.token, logout]);
 
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
     
     if (confirmLogout) {
-      // Clear token and role from localStorage
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-  
-      // Reset authState in context
-      setAuthState({
-        token: null,
-        role: null,
-        isAuthenticated: false,
-      });
-  
+      logout();
       alert("You have been logged out.");
       navigate("/auth"); // Redirect to login after logout
     } else {

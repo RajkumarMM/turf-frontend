@@ -6,16 +6,17 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Box, ButtonBase, TextField, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
-import { SportsSoccer, Grass } from "@mui/icons-material";
+import { SportsSoccer, Grass, Preview } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { AuthContext } from "../App";
- 
+import {jwtDecode} from 'jwt-decode'; // Import jwtDecode to decode JWT tokens
 
 const UserDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true); // State for loading
   const navigate = useNavigate(); // React Router's navigation hook
-  const { authState, setAuthState } = useContext(AuthContext); // Access the authState and setAuthState from context
+  const { authState, logout } = useContext(AuthContext); // Access the authState and setAuthState from context
+  
 
   // States for search bar inputs
   const [location, setLocation] = useState("");
@@ -25,24 +26,33 @@ const UserDashboard = () => {
   const [priceRange, setPriceRange] = useState("");
   const [ratings, setRatings] = useState("");
 
+  // Function to check if token is expired
+  const isTokenExpired = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.exp * 1000 < Date.now(); // Convert expiry to milliseconds
+    } catch (error) {
+      return true; // If decoding fails, assume token is invalid
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        navigate("/auth"); // If no token, redirect to login
+      if (!authState.token || isTokenExpired(authState.token)) {
+        logout(); // Logout the user if the token is expired
+        navigate("/auth"); // Redirect to login if token is not found
         return;
       }
 
       try {
         const response = await axios.get("https://turf-backend-o0i0.onrender.com/api/dashboard", {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${authState.token}` },
         });
         setData(response.data);
       } catch (error) {
         if (error.response?.status === 401) {
           // Token expired or invalid, redirect to login
-          localStorage.removeItem("token");
+          logout();
           alert("Session expired. Please log in again.");
           navigate("/auth");
         } else {
@@ -54,22 +64,13 @@ const UserDashboard = () => {
     };
 
     fetchData();
-  }, [navigate]);
+  }, [authState.token, logout]);
 
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
     
     if (confirmLogout) {
-      // Clear token and role from localStorage
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-  
-      // Reset authState in context
-      setAuthState({
-        token: null,
-        role: null,
-        isAuthenticated: false,
-      });
+      logout();
   
       alert("You have been logged out.");
       navigate("/auth"); // Redirect to login after logout
@@ -206,6 +207,21 @@ const UserDashboard = () => {
             <Box>
               <Typography variant="h4" color="primary">
                 {data.totalPlayers?.length || 0}
+              </Typography>
+            </Box>
+          </Card>
+          </ButtonBase>
+          <ButtonBase onClick={() => handleCardClick("userBookings")} >
+          <Card sx={{ minWidth: 275, textAlign: "center", borderTop: "5px solid blue", padding: "10px 0px" }}>
+            <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
+              <Preview sx={{ fontSize: 50, color: "blue" }} />
+            </Box>
+            <CardContent>
+              <Typography sx={{ color: "h3", mb: 1.5, fontWeight: "bold", fontSize: "20px" }}>View Your Bookings</Typography>
+            </CardContent>
+            <Box>
+              <Typography variant="h4" color="primary">
+                
               </Typography>
             </Box>
           </Card>

@@ -14,6 +14,8 @@ import EditTurf from "./components/EditTurf";
 import Turfs from "./components/user-dashboard/Turfs";
 import Players from "./components/user-dashboard/Players";
 import TurfDetails from "./components/user-dashboard/TurfDetails";
+import UserBookings from "./components/user-dashboard/userBookings";
+import {jwtDecode} from "jwt-decode"; // Import jwtDecode to decode the token
 
 // Create Auth Context
 export const AuthContext = createContext();
@@ -25,21 +27,36 @@ const App = () => {
     isAuthenticated: false,
   });
 
+  // Function to check token expiration
+  const isTokenExpired = (token) => {
+    try {
+      const decoded = jwtDecode(token); // Decode the token to get expiration time
+      const currentTime = Date.now() / 1000; // Convert current time to seconds
+      return decoded.exp < currentTime; // Check if the token is expired
+    } catch (error) {
+      return true; // If there's an error decoding, treat it as expired
+    }
+  };
+
   // Check localStorage for token on app load
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
 
     if (token && role) {
-      setAuthState({ token, role, isAuthenticated: true });
+      if (isTokenExpired(token)) {
+        logout(); // If the token is expired, log the user out
+      } else {
+        setAuthState({ token, role, isAuthenticated: true });
+      }
     }
   }, []);
 
   // Logout Function
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    setAuthState({ token: null, role: null, isAuthenticated: false });
+    localStorage.removeItem("token"); // Remove token from local storage
+    localStorage.removeItem("role"); // Remove role from local storage
+    setAuthState({ token: null, role: null, isAuthenticated: false }); // Update auth state
   };
 
   return (
@@ -77,7 +94,14 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          
+          <Route
+            path="/user-dashboard/userBookings"
+            element={
+              <ProtectedRoute role="player">
+                <UserBookings />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Owner Dashboard with role-based protection */}
           <Route
@@ -105,13 +129,13 @@ const App = () => {
             }
           />
           <Route
-  path="/user-dashboard/turfs/:id"
-  element={
-    <ProtectedRoute role="player">
-      <TurfDetails />
-    </ProtectedRoute>
-  }
-/>
+            path="/user-dashboard/turfs/:id"
+            element={
+              <ProtectedRoute role="player">
+                <TurfDetails />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </AuthContext.Provider>
