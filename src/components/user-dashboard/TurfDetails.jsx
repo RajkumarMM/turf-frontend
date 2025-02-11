@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, TextField, MenuItem } from "@mui/material";
+import dayjs from "dayjs";
 
 const TurfDetails = () => {
-  const { id } = useParams(); // Get the turf ID from the URL
+  const { id } = useParams();
   const [turf, setTurf] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [slots, setSlots] = useState([]);
+  const [date, setDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [price, setPrice] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTurfDetails = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `https://turf-backend-o0i0.onrender.com/api/turfs/${id}`, // Adjust endpoint as per backend
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          `http://localhost:5000/api/turfs/${id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
-        setTurf(response.data); 
-setSlots(response.data.slots || []); 
+        setTurf(response.data);
       } catch (error) {
         console.error("Error fetching turf details:", error);
       } finally {
@@ -32,27 +34,54 @@ setSlots(response.data.slots || []);
     fetchTurfDetails();
   }, [id]);
 
-  const handleSlotBooking = async (slot) => {
-    console.log(slot);
-    
+  const handleBooking = async () => {
+    if (!date || !startTime || !endTime) {
+      alert("Please select date, start time, and end time.");
+      return;
+    }
+
+    if (startTime >= endTime) {
+      alert("End time must be later than start time.");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        `https://turf-backend-o0i0.onrender.com/api/bookings/book-slot`,
-        { turfId: id, slot },
+        `http://localhost:5000/api/bookings/book-slot`,
+        { turfId: id, date, 
+          startTime: `${startTime}:00`, endTime: `${endTime}:00`,
+           price },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("Slot booked successfully!");
-      // Update slot state to reflect booking
-      setSlots((prevSlots) =>
-        prevSlots.map((s) =>
-          s === slot ? { ...s, isBooked: true } : s
-        )
-      );
     } catch (error) {
       alert("Error booking slot: " + error.response?.data?.message || error.message);
     }
   };
+
+  const calculatePrice = () => {
+    if (startTime && endTime && startTime < endTime) {
+      const hours = parseInt(endTime) - parseInt(startTime);
+      setPrice(hours * (turf?.price || 0));
+    } else {
+      setPrice(0);
+    }
+  };
+
+  useEffect(() => {
+    calculatePrice();
+    console.log(startTime, endTime);
+    
+  }, [startTime, endTime]);
+
+  const today = dayjs().format("YYYY-MM-DD");
+  const currentHour = dayjs().hour();
+
+  const availableTimes = Array.from({ length: 24 }, (_, i) => ({
+    value: i.toString().padStart(2, "0"),
+    label: `${i.toString().padStart(2, "0")}:00`,
+  }));
 
   if (loading) {
     return (
@@ -71,32 +100,90 @@ setSlots(response.data.slots || []);
   }
 
   return (
-    <Box className="container mt-4">
-      <Typography variant="h4" mb={2} textAlign="center">
-        {turf.name}
-      </Typography>
-      <Typography variant="h6" mb={2} textAlign="center">
-        Location: {turf.location}
-      </Typography>
-      <Typography variant="h6" mb={4} textAlign="center">
-        Price: {turf.price} per hour
-      </Typography>
-      <Typography variant="h5" mb={3}>
-        Available Slots:
-      </Typography>
-      <div className="row gap-3">
-        {slots.map((slot, index) => (
-          <Button
-            key={index}
-            variant="contained"
-            color={slot.isBooked ? "secondary" : "primary"}
-            disabled={slot.isBooked}
-            onClick={() => handleSlotBooking(slot)}
-          >
-            {slot.isBooked ? "Booked" : `Slot ${index + 1}: ${slot.time}`}
-          </Button>
-        ))}
-      </div>
+    <Box className="container my-4">
+      <Button variant="contained" color="primary" onClick={() => navigate("/user-dashboard/turfs")}>
+        Back
+      </Button>
+
+      <Typography variant="h4" mt={2} textAlign="center">{turf.name}</Typography>
+      <Typography variant="h6" textAlign="center">Location: {turf.location}</Typography>
+      <Typography variant="h6" textAlign="center">Price: ₹{turf.price} per hour</Typography>
+
+      {/* Display Turf Images */}
+      <Typography variant="h6" mt={2} textAlign="center">Images of {turf.name}</Typography>
+      <Box display="flex" justifyContent="center" flexWrap="wrap" gap={2}>
+        {turf.images?.length > 0 ? (
+          turf.images.map((image, index) => (
+            <img
+              key={index}
+              src={`http://localhost:5000/${image}`}
+              alt={`Turf ${index + 1}`}
+              style={{ width: "200px", height: "150px", objectFit: "cover", borderRadius: "10px" }}
+            />
+          ))
+        ) : (
+          <Typography variant="body1">No images available</Typography>
+        )}
+      </Box>
+
+      {/* Booking UI */}
+      <Typography variant="h5" mt={4} textAlign="center">Book a Slot</Typography>
+      <Box display="flex" flexDirection="column" alignItems="center" gap={2} mt={2}>
+        {/* Date Picker */}
+        <TextField
+  label="Select Date"
+  type="date"
+  value={date}
+  onChange={(e) => setDate(e.target.value)}
+  InputProps={{ inputProps: { min: today } }}
+  fullWidth
+  defaultValue={today} // Ensures default date appears
+  helperText="Choose a date for booking" // Acts like a placeholder
+/>
+
+
+        {/* Start Time */}
+        <TextField
+          select
+          label="Start Time"
+          value={startTime}
+          onChange={(e) => setStartTime(e.target.value)}
+          fullWidth
+        >
+          {availableTimes
+            .filter((time) => date !== today || parseInt(time.value) >= currentHour)
+            .map((time) => (
+              <MenuItem key={time.value} value={time.value}>
+                {time.label}
+              </MenuItem>
+            ))}
+        </TextField>
+
+        {/* End Time */}
+        <TextField
+          select
+          label="End Time"
+          value={endTime}
+          onChange={(e) => setEndTime(e.target.value)}
+          fullWidth
+        >
+          {availableTimes
+            .filter((time) => time.value > startTime)
+            .map((time) => (
+              <MenuItem key={time.value} value={time.value}>
+                {time.label}
+              </MenuItem>
+            ))}
+        </TextField>
+
+        {/* Price Display */}
+        <Typography variant="h6">Total Price: ₹{price}</Typography>
+
+        {/* Booking Button */}
+        <Button variant="contained" color="success" onClick={handleBooking}>
+          Book Now
+        </Button>
+      </Box>
     </Box>
   );
 };

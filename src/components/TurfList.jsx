@@ -14,7 +14,7 @@ const TurfList = ({ turfs }) => {
         if (!confirmDelete) return;
 
         try {
-            await axios.delete(`https://turf-backend-o0i0.onrender.com/api/turfs/${id}`);
+            await axios.delete(`http://localhost:5000/api/turfs/${id}`);
             alert('Turf deleted successfully');
             window.location.reload(); // Refresh the page or update state
         } catch (error) {
@@ -37,7 +37,6 @@ const TurfList = ({ turfs }) => {
                             <th>Turf Name</th>
                             <th>Location</th>
                             <th>Price (₹)</th>
-                            <th>slots</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -48,24 +47,6 @@ const TurfList = ({ turfs }) => {
                                 <td>{turf.name}</td>
                                 <td>{turf.location}</td>
                                 <td>{turf.price}</td>
-                                <td>
-  {turf.slots && Object.keys(turf.slots).length > 0 ?(
-    Object.keys(turf.slots).map((time, i) => (
-      <span
-        key={i}
-        className="badge badge-info mx-1"
-        style={{
-          backgroundColor: turf.slots[time].isBooked ? '#dc3545' : '#17a2b8', // Red if booked, blue if available
-          color: '#fff',
-        }}
-      >
-        {turf.slots[time].time} - {turf.slots[time].isBooked ? 'Booked' : 'Available'}
-      </span>
-    ))
-  ) : (
-    <span className="text-muted">No slots available</span>
-  )}
-</td>
 
                                 <td>
                                     <button

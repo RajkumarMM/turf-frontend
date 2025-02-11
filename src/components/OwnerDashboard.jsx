@@ -31,7 +31,7 @@ function OwnerDashboard() {
     }
 
     try {
-        const response = await axios.get('https://turf-backend-o0i0.onrender.com/api/getOwnerTurfs', {
+        const response = await axios.get('http://localhost:5000/api/getOwnerTurfs', {
             headers: {
                 Authorization: `Bearer ${authState.token}`,
             },
