@@ -14,8 +14,8 @@ import EditTurf from "./components/EditTurf";
 import Turfs from "./components/user-dashboard/Turfs";
 import Players from "./components/user-dashboard/Players";
 import TurfDetails from "./components/user-dashboard/TurfDetails";
-import UserBookings from "./components/user-dashboard/userBookings";
 import {jwtDecode} from "jwt-decode"; // Import jwtDecode to decode the token
+import UserBookings from "./components/user-dashboard/userBookings";
 
 // Create Auth Context
 export const AuthContext = createContext();
