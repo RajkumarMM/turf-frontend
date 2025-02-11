@@ -15,7 +15,7 @@ import Turfs from "./components/user-dashboard/Turfs";
 import Players from "./components/user-dashboard/Players";
 import TurfDetails from "./components/user-dashboard/TurfDetails";
 import {jwtDecode} from "jwt-decode"; // Import jwtDecode to decode the token
-import UserBookings from "./components/user-dashboard/userBookings";
+import BookingDetails from "./components/user-dashboard/BookingDetails";
 
 // Create Auth Context
 export const AuthContext = createContext();
@@ -98,7 +98,7 @@ const App = () => {
             path="/user-dashboard/userBookings"
             element={
               <ProtectedRoute role="player">
-                <UserBookings />
+                <BookingDetails />
               </ProtectedRoute>
             }
           />

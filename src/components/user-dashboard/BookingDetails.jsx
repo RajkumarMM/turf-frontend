@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import dayjs from "dayjs"; // Import Day.js
 
-function UserBookings() {
+function BookingDetails() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -74,4 +74,4 @@ function UserBookings() {
   );
 }
 
-export default UserBookings;
+export default BookingDetails;
