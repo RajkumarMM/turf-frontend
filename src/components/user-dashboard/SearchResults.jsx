@@ -9,6 +9,15 @@ import {
   Button,
   Box,
 } from "@mui/material";
+import { AuthContext } from "../../App";
+
+
+
+
+
+
+
+
 const SearchResults = () => {
   const location = useLocation();
   const navigate = useNavigate();
