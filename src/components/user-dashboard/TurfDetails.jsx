@@ -20,7 +20,7 @@ const TurfDetails = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:5000/api/turfs/${id}`,
+          `https://turf-backend-o0i0.onrender.com/api/turfs/${id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setTurf(response.data);
@@ -48,7 +48,7 @@ const TurfDetails = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        `http://localhost:5000/api/bookings/book-slot`,
+        `https://turf-backend-o0i0.onrender.com/api/bookings/book-slot`,
         { turfId: id, date, 
           startTime: `${startTime}:00`, endTime: `${endTime}:00`,
            price },
@@ -116,7 +116,7 @@ const TurfDetails = () => {
           turf.images.map((image, index) => (
             <img
               key={index}
-              src={`http://localhost:5000/${image}`}
+              src={`https://turf-backend-o0i0.onrender.com/${image}`}
               alt={`Turf ${index + 1}`}
               style={{ width: "200px", height: "150px", objectFit: "cover", borderRadius: "10px" }}
             />
