@@ -20,7 +20,7 @@ const SearchResults = () => {
   useEffect(() => {
     const fetchSearchResults = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/search", {
+        const response = await axios.get("https://turf-backend-o0i0.onrender.com/api/search", {
           params: searchParams, // Send search criteria
           headers: {
             Authorization: `Bearer ${authState.token}`, // Attach token in the header
