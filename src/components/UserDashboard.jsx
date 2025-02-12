@@ -86,7 +86,10 @@ const UserDashboard = () => {
    // Search bar handler
    const handleSearch = () => {
     // Logic to filter or search based on the selected criteria
-    console.log("Search Criteria:", { location, date, time, amenities, priceRange, ratings });
+    console.log("Search Criteria:", { location, date, time, amenities, priceRange});
+    navigate("/user-dashboard/search-results", {
+      state: { location, date, time, amenities, priceRange},
+    });
     // API call for search can be added here if needed
   };
 
@@ -142,9 +145,9 @@ const UserDashboard = () => {
               onChange={(e) => setAmenities(e.target.value)}
               label="Amenities"
             >
-              <MenuItem value="Wifi">Cricket</MenuItem>
-              <MenuItem value="Parking">Football</MenuItem>
-              <MenuItem value="Refreshments">Tennis</MenuItem>
+              <MenuItem value="Criket">Cricket</MenuItem>
+              <MenuItem value="Football">Football</MenuItem>
+              <MenuItem value="Tennis">Tennis</MenuItem>
             </Select>
           </FormControl>
           <FormControl size="small" sx={{ minWidth: 130 }}>
@@ -159,20 +162,6 @@ const UserDashboard = () => {
               <MenuItem value="High">High</MenuItem>
             </Select>
           </FormControl>
-          {/* <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel>Ratings</InputLabel>
-            <Select
-              value={ratings}
-              onChange={(e) => setRatings(e.target.value)}
-              label="Ratings"
-            >
-              <MenuItem value="1">1 Star</MenuItem>
-              <MenuItem value="2">2 Stars</MenuItem>
-              <MenuItem value="3">3 Stars</MenuItem>
-              <MenuItem value="4">4 Stars</MenuItem>
-              <MenuItem value="5">5 Stars</MenuItem>
-            </Select>
-          </FormControl> */}
           <Button variant="contained" color="primary" onClick={handleSearch}>
             Search
           </Button>
