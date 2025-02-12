@@ -10,6 +10,7 @@ import { SportsSoccer, Grass, Preview } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { AuthContext } from "../App";
 import {jwtDecode} from 'jwt-decode'; // Import jwtDecode to decode JWT tokens
+import dayjs from "dayjs";
 
 const UserDashboard = () => {
   const [data, setData] = useState(null);
@@ -20,11 +21,10 @@ const UserDashboard = () => {
 
   // States for search bar inputs
   const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [time, setTime] = useState("");
-  const [amenities, setAmenities] = useState("");
-  const [priceRange, setPriceRange] = useState("");
-  const [ratings, setRatings] = useState("");
+  const [amenities, setAmenities] = useState("Criket");
+  const [priceRange, setPriceRange] = useState("1000");
 
   // Function to check if token is expired
   const isTokenExpired = (token) => {
@@ -45,7 +45,7 @@ const UserDashboard = () => {
       }
 
       try {
-        const response = await axios.get("https://turf-backend-o0i0.onrender.com/api/dashboard", {
+        const response = await axios.get("http://localhost:5000/api/dashboard", {
           headers: { Authorization: `Bearer ${authState.token}` },
         });
         setData(response.data);
@@ -85,13 +85,33 @@ const UserDashboard = () => {
 
    // Search bar handler
    const handleSearch = () => {
-    // Logic to filter or search based on the selected criteria
-    console.log("Search Criteria:", { location, date, time, amenities, priceRange});
+    const today = dayjs(); // Get current date & time
+    const selectedDate = dayjs(date, "YYYY-MM-DD"); // Parse selected date
+    const selectedTime = dayjs(`${date} ${time}`, "YYYY-MM-DD HH:mm"); // Parse full date & time
+  
+    // Check if selected date is in the past
+    if (selectedDate.isBefore(today.startOf("day"))) {
+      alert("Past dates are not allowed!");
+      return;
+    }
+  
+    // If today’s date is selected, check if the selected time is in the past
+    if (selectedDate.isSame(today, "day")) {
+      const now = dayjs(); // Current date & time
+      if (selectedTime.isBefore(now)) { // Compare actual DateTime objects
+        alert("Past time is not allowed for today's searching!");
+        return;
+      }
+    }
+  
+    // Proceed with navigation if validation passes
+    console.log("Search Criteria:", { location, date, time, amenities, priceRange });
     navigate("/user-dashboard/search-results", {
-      state: { location, date, time, amenities, priceRange},
+      state: { location, date, time, amenities, priceRange },
     });
-    // API call for search can be added here if needed
   };
+  
+
 
   if (loading) {
     return (
@@ -157,9 +177,9 @@ const UserDashboard = () => {
               onChange={(e) => setPriceRange(e.target.value)}
               label="Price Range"
             >
-              <MenuItem value="Low">Low</MenuItem>
-              <MenuItem value="Medium">Medium</MenuItem>
-              <MenuItem value="High">High</MenuItem>
+              <MenuItem value="1000">Low</MenuItem>
+              <MenuItem value="2000">Medium</MenuItem>
+              <MenuItem value="3000">High</MenuItem>
             </Select>
           </FormControl>
           <Button variant="contained" color="primary" onClick={handleSearch}>
