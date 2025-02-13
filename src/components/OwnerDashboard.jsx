@@ -31,13 +31,15 @@ function OwnerDashboard() {
     }
 
     try {
-        const response = await axios.get('http://localhost:5000/api/getOwnerTurfs', {
+        const response = await axios.get('https://turf-backend-o0i0.onrender.com/api/getOwnerTurfs', {
             headers: {
                 Authorization: `Bearer ${authState.token}`,
             },
         });
         setTurfs(response.data);
     } catch (error) {
+      console.log(error);
+      
       if (error.response?.status === 401) {
         // Token expired or invalid, redirect to login
         logout();

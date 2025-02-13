@@ -21,7 +21,7 @@ const EditTurf = () => {
     useEffect(() => {
         const fetchTurf = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/turfs/${id}`);
+                const response = await axios.get(`https://turf-backend-o0i0.onrender.com/api/turfs/${id}`);
                 setTurfData({
                     name: response.data.name,
                     location: response.data.location,
@@ -93,7 +93,7 @@ const EditTurf = () => {
         newImages.forEach((image) => formData.append("newImages", image));
 
         try {
-            await axios.put(`http://localhost:5000/api/turfs/${id}`, formData, {
+            await axios.put(`https://turf-backend-o0i0.onrender.com/api/turfs/${id}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             alert("Turf updated successfully!");
@@ -165,7 +165,7 @@ const EditTurf = () => {
                     {turfData.images.map((image, index) => (
                         <div key={index} className="m-2 position-relative">
                             <img
-                                src={`http://localhost:5000/${image.replace(/\\/g, "/")}`}
+                                src={`https://turf-backend-o0i0.onrender.com/${image.replace(/\\/g, "/")}`}
                                 alt={`Existing ${index}`}
                                 style={{ width: "100px", height: "100px", objectFit: "cover" }}
                             />

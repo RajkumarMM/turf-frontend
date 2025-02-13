@@ -74,9 +74,9 @@ const RegisterTurf = () => {
     turfData.images.forEach((image) => {
       formData.append("images", image);
     });
-
+    
     try {
-      await axios.post("http://localhost:5000/api/registerTurf", formData, {
+      await axios.post("https://turf-backend-o0i0.onrender.com/api/registerTurf", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
