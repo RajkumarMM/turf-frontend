@@ -70,7 +70,7 @@ const TurfDetails = () => {
       
       // Calculate price accurately (1000 per hour, so 1000 / 60 per minute)
       const perMinuteRate = (turf?.price || 1000) / 60;
-      setPrice(durationMinutes * perMinuteRate);
+      setPrice((durationMinutes * perMinuteRate).toFixed(2));
     } else {
       setPrice(0);
     }
