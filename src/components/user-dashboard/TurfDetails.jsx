@@ -44,13 +44,15 @@ const TurfDetails = () => {
       alert("End time must be later than start time.");
       return;
     }
+    console.log(startTime, endTime);
+    
 
     try {
       const token = localStorage.getItem("token");
       await axios.post(
         `https://turf-backend-o0i0.onrender.com/api/bookings/book-slot`,
         { turfId: id, date, 
-          startTime: `${startTime}:00`, endTime: `${endTime}:00`,
+          startTime, endTime,
            price },
         { headers: { Authorization: `Bearer ${token}` } }
       );
