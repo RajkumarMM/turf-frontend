@@ -62,12 +62,20 @@ const TurfDetails = () => {
 
   const calculatePrice = () => {
     if (startTime && endTime && startTime < endTime) {
-      const hours = parseInt(endTime) - parseInt(startTime);
-      setPrice(hours * (turf?.price || 0));
+      const start = dayjs(`2000-01-01T${startTime}:00`);
+      const end = dayjs(`2000-01-01T${endTime}:00`);
+      
+      // Get total duration in minutes
+      const durationMinutes = end.diff(start, "minute");
+      
+      // Calculate price accurately (1000 per hour, so 1000 / 60 per minute)
+      const perMinuteRate = (turf?.price || 1000) / 60;
+      setPrice(durationMinutes * perMinuteRate);
     } else {
       setPrice(0);
     }
   };
+  
 
   useEffect(() => {
     calculatePrice();
