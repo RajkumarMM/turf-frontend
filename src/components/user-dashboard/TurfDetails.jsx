@@ -44,7 +44,21 @@ const TurfDetails = () => {
       alert("End time must be later than start time.");
       return;
     }
-    console.log(startTime, endTime);
+    // console.log(startTime, endTime);
+
+    const selectedStart = dayjs(`${date}T${startTime}:00`);
+    const selectedEnd = dayjs(`${date}T${endTime}:00`);
+    const now = dayjs();
+  
+    // Check if selected time is in the past
+    if (selectedStart.isBefore(now)) {
+      alert("Start time cannot be in the past.");
+      return;
+    }
+    if (selectedEnd.isBefore(selectedStart)) {
+      alert("End time must be later than start time.");
+      return;
+    }
     
 
     try {
