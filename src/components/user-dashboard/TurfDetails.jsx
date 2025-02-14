@@ -76,12 +76,22 @@ const TurfDetails = () => {
   }, [startTime, endTime]);
 
   const today = dayjs().format("YYYY-MM-DD");
-  const currentHour = dayjs().hour();
+const currentHour = dayjs().hour();
+const currentMinute = dayjs().minute();
 
-  const availableTimes = Array.from({ length: 24 }, (_, i) => ({
-    value: i.toString().padStart(2, "0"),
-    label: `${i.toString().padStart(2, "0")}:00`,
-  }));
+// 🕒 Generate time slots for every minute (24-hour format)
+const availableTimes = [];
+for (let hour = 0; hour < 24; hour++) {
+  for (let minute = 0; minute < 60; minute++) {
+    const timeValue = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+    const isPast = dayjs().hour(hour).minute(minute).isBefore(dayjs().hour(currentHour).minute(currentMinute));
+
+    // Exclude past times for today
+    if (!(date === today && isPast)) {
+      availableTimes.push({ value: timeValue, label: timeValue });
+    }
+  }
+}
 
   if (loading) {
     return (
