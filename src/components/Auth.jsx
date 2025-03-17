@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { AuthContext } from "../App"; // Import the AuthContext
+import { useAuth } from "../context/AuthContext"; // Import the AuthContext
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true); // Toggle between Login and Register
@@ -10,7 +10,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { authState, setAuthState } = useContext(AuthContext); // Access the authState and setAuthState from context
+  const { authState, setAuthState } = useAuth(); // Access the authState and setAuthState from context
 
   useEffect(() => {
     // Check for token and navigate to the appropriate dashboard
@@ -30,7 +30,7 @@ const Auth = () => {
   
     try {
       const response = await axios.post(
-        `https://turf-backend-o0i0.onrender.com/api${endpoint}`,
+        `http://localhost:5000/api${endpoint}`,
         {
           name: !isLogin ? name : undefined, // Include name only for registration
           email,

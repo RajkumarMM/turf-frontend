@@ -4,6 +4,7 @@ import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Box, Typography, Button, TextField, MenuItem } from "@mui/material";
 import dayjs from "dayjs";
+import AvailableSlots from "./AvailableSlots";
 
 const TurfDetails = () => {
   const { id } = useParams();
@@ -20,7 +21,7 @@ const TurfDetails = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `https://turf-backend-o0i0.onrender.com/api/turfs/${id}`,
+          `http://localhost:5000/api/turfs/${id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setTurf(response.data);
@@ -64,7 +65,7 @@ const TurfDetails = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        `https://turf-backend-o0i0.onrender.com/api/bookings/book-slot`,
+        `http://localhost:5000/api/bookings/book-slot`,
         { turfId: id, date, 
           startTime, endTime,
            price },
@@ -103,7 +104,7 @@ const TurfDetails = () => {
 const currentHour = dayjs().hour();
 const currentMinute = dayjs().minute();
 
-// 🕒 Generate time slots for every minute (24-hour format)
+// Generate time slots for every minute (24-hour format)
 const availableTimes = [];
 for (let hour = 0; hour < 24; hour++) {
   for (let minute = 0; minute < 60; minute++) {
@@ -135,7 +136,7 @@ for (let hour = 0; hour < 24; hour++) {
 
   return (
     <Box className="container my-4">
-      <Button variant="contained" color="primary" onClick={() => navigate("/user-dashboard/turfs")}>
+      <Button variant="contained" color="primary" onClick={() => navigate("/user-dashboard")}>
         Back
       </Button>
 
@@ -150,7 +151,7 @@ for (let hour = 0; hour < 24; hour++) {
           turf.images.map((image, index) => (
             <img
               key={index}
-              src={`https://turf-backend-o0i0.onrender.com/${image}`}
+              src={`http://localhost:5000/${image}`}
               alt={`Turf ${index + 1}`}
               style={{ width: "200px", height: "150px", objectFit: "cover", borderRadius: "10px" }}
             />
@@ -161,63 +162,7 @@ for (let hour = 0; hour < 24; hour++) {
       </Box>
 
       {/* Booking UI */}
-      <Typography variant="h5" mt={4} textAlign="center">Book a Slot</Typography>
-      <Box display="flex" flexDirection="column" alignItems="center" gap={2} mt={2}>
-        {/* Date Picker */}
-        <TextField
-  label="Select Date"
-  type="date"
-  value={date}
-  onChange={(e) => setDate(e.target.value)}
-  InputProps={{ inputProps: { min: today } }}
-  fullWidth
-  defaultValue={today} // Ensures default date appears
-  helperText="Choose a date for booking" // Acts like a placeholder
-/>
-
-
-        {/* Start Time */}
-        <TextField
-          select
-          label="Start Time"
-          value={startTime}
-          onChange={(e) => setStartTime(e.target.value)}
-          fullWidth
-        >
-          {availableTimes
-            .filter((time) => date !== today || parseInt(time.value) >= currentHour)
-            .map((time) => (
-              <MenuItem key={time.value} value={time.value}>
-                {time.label}
-              </MenuItem>
-            ))}
-        </TextField>
-
-        {/* End Time */}
-        <TextField
-          select
-          label="End Time"
-          value={endTime}
-          onChange={(e) => setEndTime(e.target.value)}
-          fullWidth
-        >
-          {availableTimes
-            .filter((time) => time.value > startTime)
-            .map((time) => (
-              <MenuItem key={time.value} value={time.value}>
-                {time.label}
-              </MenuItem>
-            ))}
-        </TextField>
-
-        {/* Price Display */}
-        <Typography variant="h6">Total Price: ₹{price}</Typography>
-
-        {/* Booking Button */}
-        <Button variant="contained" color="success" onClick={handleBooking}>
-          Book Now
-        </Button>
-      </Box>
+      <AvailableSlots turfId={id} turfPrice= {turf.price} openingTime={turf.openingTime} closingTime= {turf.closingTime} />
     </Box>
   );
 };

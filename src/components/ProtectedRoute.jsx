@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../App'; // Import AuthContext to access authentication state
+import { useAuth } from "../context/AuthContext"; // Import AuthContext to access authentication state
 import {jwtDecode} from 'jwt-decode'; // Import jwtDecode to decode JWT tokens
 
 const ProtectedRoute = ({ children, role }) => {
   // Access authentication state and logout function from AuthContext
-  const { authState, logout } = useContext(AuthContext);
+  const { authState, logout } = useAuth();
 
   useEffect(() => {
     if (authState.token) {
@@ -25,12 +25,12 @@ const ProtectedRoute = ({ children, role }) => {
         logout(); // If decoding fails, assume the token is invalid and log out the user
       }
     }
-  }, [authState.token, logout]); // Run effect when authState.token or logout function changes
+  }, [authState.token]); // Run effect when authState.token or logout function changes
 
-  // If user is not authenticated, redirect to login page
-  if (!authState.isAuthenticated) {
-    return <Navigate to="/auth" />;
-  }
+  // // If user is not authenticated, redirect to login page
+  // if (!authState.isAuthenticated) {
+  //   return <Navigate to="/auth" />;
+  // }
 
   // If a role is required and does not match the user's role, redirect to home
   if (role && authState.role !== role) {

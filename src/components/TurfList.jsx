@@ -14,7 +14,7 @@ const TurfList = ({ turfs }) => {
         if (!confirmDelete) return;
 
         try {
-            await axios.delete(`https://turf-backend-o0i0.onrender.com/api/turfs/${id}`);
+            await axios.delete(`http://localhost:5000/api/turfs/${id}`);
             alert('Turf deleted successfully');
             window.location.reload(); // Refresh the page or update state
         } catch (error) {

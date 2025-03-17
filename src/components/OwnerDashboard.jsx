@@ -4,14 +4,14 @@ import axios from 'axios';
 import Button from "@mui/material/Button";
 import { useNavigate } from 'react-router-dom';
 import CircularProgress from "@mui/material/CircularProgress"; // Loading spinner
-import { AuthContext } from "../App";
+import { useAuth } from "../context/AuthContext";
 import {jwtDecode} from 'jwt-decode'; // Import jwtDecode to decode JWT tokens
 
 function OwnerDashboard() {
   const [turfs, setTurfs] = useState([]);
   const [loading, setLoading] = useState(true); // State for loading
   const navigate = useNavigate(); // React Router's navigation hook
-  const { authState, setAuthState, logout } = useContext(AuthContext); // Access the authState and setAuthState from context
+  const { authState, setAuthState, logout } = useAuth(); // Access the authState and setAuthState from context
 
   // Function to check if token is expired
     const isTokenExpired = (token) => {
@@ -26,12 +26,12 @@ function OwnerDashboard() {
   const fetchTurfs = async () => {
     if (!authState.token || isTokenExpired(authState.token)) {
       logout(); // Logout the user if the token is expired
-      navigate("/auth"); // Redirect to login if token is not found
+      // navigate("/auth"); // Redirect to login if token is not found
       return;
     }
 
     try {
-        const response = await axios.get('https://turf-backend-o0i0.onrender.com/api/getOwnerTurfs', {
+        const response = await axios.get('http://localhost:5000/api/getOwnerTurfs', {
             headers: {
                 Authorization: `Bearer ${authState.token}`,
             },
@@ -44,7 +44,7 @@ function OwnerDashboard() {
         // Token expired or invalid, redirect to login
         logout();
         alert("Session expired. Please log in again.");
-        navigate("/auth");
+        // navigate("/auth");
       } else {
         alert(error.response?.data?.message || "Failed to load dashboard");
       }
@@ -65,7 +65,7 @@ function OwnerDashboard() {
     if (confirmLogout) {
       logout();
       alert("You have been logged out.");
-      navigate("/auth"); // Redirect to login after logout
+      // navigate("/auth"); // Redirect to login after logout
     } else {
       alert("Logout canceled.");
     }
