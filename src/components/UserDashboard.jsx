@@ -1,14 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import { Box, ButtonBase } from "@mui/material";
-import { SportsSoccer, Grass, Preview } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useAuth } from "../context/AuthContext";
 import TurfCard from "./TurfCard";
+import SearchResults from "./user-dashboard/SearchResults";
 
 const UserDashboard = () => {
   const [data, setData] = useState(null);
@@ -39,6 +35,8 @@ const UserDashboard = () => {
 
       try {
         const response = await axios.get("http://localhost:5000/api/dashboard");
+        // console.log(response.data);
+        
         setData(response.data);
       } catch (error) {
         if (error.response?.status === 401) {
@@ -116,14 +114,13 @@ const UserDashboard = () => {
     <>
       
       <div className="container">
+        <SearchResults/>
       {data ? (
-        <div className="row mt-5 justify-content-center">
+          <div className="row my-2 g-4"> {/* Bootstrap Grid with spacing */}
           {data.turfs.map((turf, index) => (
-            <div className="col-8" key={index + 1}>
-        <ButtonBase sx={{width: "100%", marginTop: "5px",}} >
-          <TurfCard turf={turf} />
-        </ButtonBase>
-        </div>
+            <div key={index} className="col-md-4 col-sm-6 col-12"> 
+              <TurfCard turf={turf} />
+            </div>
       ))}
         </div>
       ) : (

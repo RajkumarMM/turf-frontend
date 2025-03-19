@@ -262,6 +262,5 @@ const AvailableSlots = ({ turfId, turfPrice, openingTime, closingTime }) => {
       {showModal && <div className="modal-backdrop show"></div>}
     </div>
   );
-};
-
+}
 export default AvailableSlots;
