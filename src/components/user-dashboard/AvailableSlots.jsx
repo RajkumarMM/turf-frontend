@@ -37,7 +37,7 @@ const AvailableSlots = ({ turfId, turfPrice, openingTime, closingTime }) => {
       setLoading(true);
       setError("");
       const response = await axios.get(
-        `http://localhost:5000/api/booked-slots?turfId=${turfId}&date=${selectedDate}`
+        `https://turf-backend-o0i0.onrender.com/api/booked-slots?turfId=${turfId}&date=${selectedDate}`
       );
       setBookedSlots(response.data);
     } catch (err) {

@@ -31,7 +31,7 @@ const Payment = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/bookings/book-slot",
+        "https://turf-backend-o0i0.onrender.com/api/bookings/book-slot",
         bookingDetails,
         {
           headers: { Authorization: `Bearer ${token}` }, // Include JWT token

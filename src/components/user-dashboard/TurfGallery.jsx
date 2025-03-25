@@ -28,7 +28,7 @@ const TurfGallery = ({ turf }) => {
           {turf.images.map((image, index) => (
             <SwiperSlide key={index}>
               <img
-                src={`http://localhost:5000/${image}`}
+                src={`https://turf-backend-o0i0.onrender.com/${image}`}
                 alt={`Turf ${index + 1}`}
                 style={{
                   width: "100%",
@@ -52,7 +52,7 @@ const TurfGallery = ({ turf }) => {
         {turf.images?.map((image, index) => (
           <img
             key={index}
-            src={`http://localhost:5000/${image}`}
+            src={`https://turf-backend-o0i0.onrender.com/${image}`}
             alt={`Turf ${index + 1}`}
             style={{
               width: "150px",

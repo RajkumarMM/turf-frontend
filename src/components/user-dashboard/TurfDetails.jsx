@@ -23,7 +23,7 @@ const TurfDetails = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:5000/api/turfs/${id}`,
+          `https://turf-backend-o0i0.onrender.com/api/turfs/${id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setTurf(response.data);
@@ -67,7 +67,7 @@ const TurfDetails = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        `http://localhost:5000/api/bookings/book-slot`,
+        `https://turf-backend-o0i0.onrender.com/api/bookings/book-slot`,
         { turfId: id, date, 
           startTime, endTime,
            price },

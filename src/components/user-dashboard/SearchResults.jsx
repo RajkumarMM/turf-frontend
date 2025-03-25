@@ -59,7 +59,7 @@ const SearchResults = ({ onSearch }) => {
   //   }
   //   try {
   //     console.log(location, date, time, amenities, priceRange);
-  //     const response = await axios.get("http://localhost:5000/api/search", {
+  //     const response = await axios.get("https://turf-backend-o0i0.onrender.com/api/search", {
   //       params: { location, date, time, amenities, priceRange },
   //     });
   //     setResults(response.data);

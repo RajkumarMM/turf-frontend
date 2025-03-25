@@ -111,7 +111,7 @@ const OTPVerification = () => {
             }
         }
 
-        const response = await axios.post("http://localhost:5000/api/save-user", user);
+        const response = await axios.post("https://turf-backend-o0i0.onrender.com/api/save-user", user);
         const token = response.data.token;
         localStorage.setItem("token", token);
         login(user, token);

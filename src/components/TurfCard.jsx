@@ -12,7 +12,7 @@ const TurfCard = ({ turf }) => {
   };
 
   const turfImage = turf?.images?.[0]
-    ? `http://localhost:5000/${turf.images[0].replace(/\\/g, "/")}`
+    ? `https://turf-backend-o0i0.onrender.com/${turf.images[0].replace(/\\/g, "/")}`
     : "/default-turf.jpg";
 
   // Function to truncate combined name & location within 15 characters

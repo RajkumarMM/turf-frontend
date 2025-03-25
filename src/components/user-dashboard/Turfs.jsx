@@ -15,7 +15,7 @@ const Turfs = () => {
       // if (!token) return;
 
       try {
-        const response = await axios.get("http://localhost:5000/api/dashboard");
+        const response = await axios.get("https://turf-backend-o0i0.onrender.com/api/dashboard");
         const {turfs} = response.data;
         
         setTurfs(turfs); // Assuming the API returns an array of turfs

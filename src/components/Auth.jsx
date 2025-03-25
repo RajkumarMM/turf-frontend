@@ -30,7 +30,7 @@ const Auth = () => {
   
     try {
       const response = await axios.post(
-        `http://localhost:5000/api${endpoint}`,
+        `https://turf-backend-o0i0.onrender.com/api${endpoint}`,
         {
           name: !isLogin ? name : undefined, // Include name only for registration
           email,

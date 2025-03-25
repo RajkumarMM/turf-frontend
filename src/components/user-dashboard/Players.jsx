@@ -13,7 +13,7 @@ const Players = () => {
       if (!token) return;
 
       try {
-        const response = await axios.get("http://localhost:5000/api/dashboard", {
+        const response = await axios.get("https://turf-backend-o0i0.onrender.com/api/dashboard", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const {turfs, totalPlayers} = response.data;

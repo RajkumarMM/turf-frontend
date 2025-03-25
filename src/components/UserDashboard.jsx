@@ -31,7 +31,7 @@ const UserDashboard = () => {
 
   const fetchAvailableCities = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/turf-cities");
+      const res = await axios.get("https://turf-backend-o0i0.onrender.com/api/turf-cities");
       setAvailableCities(res.data.cities);
     } catch (error) {
       console.error("Error fetching cities:", error);
@@ -40,7 +40,7 @@ const UserDashboard = () => {
 
   const fetchAllTurfs = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/dashboard");
+      const response = await axios.get("https://turf-backend-o0i0.onrender.com/api/dashboard");
       setAllTurfs(response.data.turfs);
       setTurfs(response.data.turfs);
     } catch (error) {
@@ -53,7 +53,7 @@ const UserDashboard = () => {
   const fetchTurfsByCity = async (city) => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/turfs?city=${city}`);
+      const response = await axios.get(`https://turf-backend-o0i0.onrender.com/api/turfs?city=${city}`);
       setAllTurfs(response.data.turfs);
       setTurfs(response.data.turfs);
     } catch (error) {
