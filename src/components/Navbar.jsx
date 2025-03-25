@@ -36,7 +36,7 @@ function Navbar() {
   return (
     <>
       {/* Navbar */}
-      <AppBar position="static" sx={{ backgroundColor: "#212121" }}>
+      <AppBar position="static" sx={{ backgroundColor: "black" }}>
         <Toolbar>
           {/* Logo and Title */}
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
@@ -55,14 +55,14 @@ function Navbar() {
           </Typography>
 
           {/* Search Button */}
-          <Button
+          {/* <Button
             color="secondary"
             variant="contained"
             onClick={() => navigate("/user-dashboard/search-results")}
             sx={{ marginRight: "20px", minWidth: "40px", padding: "8px" }}
           >
             <SearchIcon />
-          </Button>
+          </Button> */}
 
           {/* Owner Login Button (Only if not logged in) */}
           {!authState.isAuthenticated && (

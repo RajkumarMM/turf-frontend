@@ -31,7 +31,7 @@ const TurfCard = ({ turf }) => {
           borderRadius: 3,
           boxShadow: 3,
           overflow: "hidden",
-          backgroundColor: "#1c1c1c",
+          backgroundColor: "black",
           color: "#fff",
           cursor: "pointer",
         }}

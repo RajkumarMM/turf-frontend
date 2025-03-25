@@ -17,54 +17,63 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import dayjs from "dayjs";
 
-const SearchResults = () => {
-  const navigate = useNavigate();
-  const [results, setResults] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const { authState } = useAuth();
+const SearchResults = ({ onSearch }) => {
+  // const navigate = useNavigate();
+  // const [results, setResults] = useState(null);
+  // const [loading, setLoading] = useState(false);
+  // const { authState } = useAuth();
+  
+  
 
   // States for search bar inputs
-  const [location, setLocation] = useState("");
-  const [date, setDate] = useState(dayjs().format("YYYY-MM-DD"));
-  const [time, setTime] = useState("");
-  const [amenities, setAmenities] = useState("Cricket");
-  const [priceRange, setPriceRange] = useState("1000");
+  // const [location, setLocation] = useState("");
+  // const [date, setDate] = useState(dayjs().format("YYYY-MM-DD"));
+  // const [time, setTime] = useState("");
+  // const [amenities, setAmenities] = useState("Cricket");
+  // const [priceRange, setPriceRange] = useState("1000");
+  const [query, setQuery] = useState("");
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    const today = dayjs();
-    const selectedDate = dayjs(date, "YYYY-MM-DD");
-    const selectedTime = dayjs(`${date} ${time}`, "YYYY-MM-DD HH:mm");
-
-    if (selectedDate.isBefore(today.startOf("day"))) {
-      alert("Past dates are not allowed!");
-      return;
-    }
-    if (selectedDate.isSame(today, "day")) {
-      const now = dayjs();
-      if (selectedTime.isBefore(now)) {
-        alert("Past time is not allowed for today's searching!");
-        return;
-      }
-    }
-    try {
-      console.log(location, date, time, amenities, priceRange);
-      const response = await axios.get("http://localhost:5000/api/search", {
-        params: { location, date, time, amenities, priceRange },
-      });
-      setResults(response.data);
-      console.log(results);
-    } catch (error) {
-      alert("Error fetching search results");
-    } finally {
-      setLoading(false);
-    }
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setQuery(value);
+    onSearch(value);
   };
+
+  // const handleSearch = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   const today = dayjs();
+  //   const selectedDate = dayjs(date, "YYYY-MM-DD");
+  //   const selectedTime = dayjs(`${date} ${time}`, "YYYY-MM-DD HH:mm");
+
+  //   if (selectedDate.isBefore(today.startOf("day"))) {
+  //     alert("Past dates are not allowed!");
+  //     return;
+  //   }
+  //   if (selectedDate.isSame(today, "day")) {
+  //     const now = dayjs();
+  //     if (selectedTime.isBefore(now)) {
+  //       alert("Past time is not allowed for today's searching!");
+  //       return;
+  //     }
+  //   }
+  //   try {
+  //     console.log(location, date, time, amenities, priceRange);
+  //     const response = await axios.get("http://localhost:5000/api/search", {
+  //       params: { location, date, time, amenities, priceRange },
+  //     });
+  //     setResults(response.data);
+  //     console.log(results);
+  //   } catch (error) {
+  //     alert("Error fetching search results");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <Box
-      className="container mt-4 p-4"
+      className="container p-1"
       sx={{
         backgroundColor: "black",
         borderRadius: "10px",
@@ -84,10 +93,10 @@ const SearchResults = () => {
         sx={{ padding: "10px" }}
       >
         <TextField
-          label="Location"
+          label="Search Venues"
           variant="outlined"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          value={query}
+          onChange={handleChange}
           size="small"
           sx={{
             bgcolor: "black",
@@ -101,7 +110,7 @@ const SearchResults = () => {
             },
           }}
         />
-        <TextField
+        {/* <TextField
           label="Date"
           type="date"
           variant="outlined"
@@ -120,7 +129,7 @@ const SearchResults = () => {
             },
           }}
           InputLabelProps={{ shrink: true }}
-        />
+        /> */}
         {/* <TextField
           label="Time"
           type="time"
@@ -141,7 +150,7 @@ const SearchResults = () => {
           }}
           InputLabelProps={{ shrink: true }}
         /> */}
-        <FormControl size="small" sx={{ minWidth: 120, bgcolor: "black", borderRadius: "5px" }}>
+        {/* <FormControl size="small" sx={{ minWidth: 120, bgcolor: "black", borderRadius: "5px" }}>
           <InputLabel sx={{ color: "white" }}>Amenities</InputLabel>
           <Select
             value={amenities}
@@ -158,8 +167,8 @@ const SearchResults = () => {
             <MenuItem value="Football">Football</MenuItem>
             <MenuItem value="Tennis">Tennis</MenuItem>
           </Select>
-        </FormControl>
-        <FormControl size="small" sx={{ minWidth: 130, bgcolor: "black", borderRadius: "5px" }}>
+        </FormControl> */}
+        {/* <FormControl size="small" sx={{ minWidth: 130, bgcolor: "black", borderRadius: "5px" }}>
           <InputLabel sx={{ color: "white" }}>Price Range</InputLabel>
           <Select
             value={priceRange}
@@ -176,8 +185,8 @@ const SearchResults = () => {
             <MenuItem value="2000">Medium</MenuItem>
             <MenuItem value="3000">High</MenuItem>
           </Select>
-        </FormControl>
-        <Button
+        </FormControl> */}
+        {/* <Button
           variant="contained"
           sx={{
             bgcolor: "green",
@@ -188,7 +197,7 @@ const SearchResults = () => {
           onClick={handleSearch}
         >
           Search
-        </Button>
+        </Button> */}
       </Box>
     </Box>
   );

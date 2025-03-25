@@ -5,6 +5,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Box, Typography, Button, TextField, MenuItem } from "@mui/material";
 import dayjs from "dayjs";
 import AvailableSlots from "./AvailableSlots";
+import TurfGallery from "./TurfGallery";
+import TurfActions from "./TurfActions";
 
 const TurfDetails = () => {
   const { id } = useParams();
@@ -133,33 +135,20 @@ for (let hour = 0; hour < 24; hour++) {
       </Typography>
     );
   }
-
+  const turfAddress = `${turf.address}, ${turf.location}`;
   return (
     <Box className="container my-4">
       <Button variant="contained" color="primary" onClick={() => navigate("/user-dashboard")}>
         Back
       </Button>
+      <TurfGallery turf={turf} />
 
-      <Typography variant="h4" mt={2} textAlign="center">{turf.name}</Typography>
-      <Typography variant="h6" textAlign="center">Location: {turf.location}</Typography>
-      <Typography variant="h6" textAlign="center">Price: ₹{turf.price} per hour</Typography>
+      <Typography variant="h3" mt={2} textAlign="start" textTransform="capitalize">{turf.name}</Typography>
+      <Typography variant="h5" textAlign="start" textTransform="capitalize">Location: {turf.address}, {turf.location}</Typography>
+      <Typography variant="h5" textAlign="start" textTransform="capitalize">Price: ₹{turf.price} per hour</Typography>
 
-      {/* Display Turf Images */}
-      <Typography variant="h6" mt={2} textAlign="center">Images of {turf.name}</Typography>
-      <Box display="flex" justifyContent="center" flexWrap="wrap" gap={2}>
-        {turf.images?.length > 0 ? (
-          turf.images.map((image, index) => (
-            <img
-              key={index}
-              src={`http://localhost:5000/${image}`}
-              alt={`Turf ${index + 1}`}
-              style={{ width: "200px", height: "150px", objectFit: "cover", borderRadius: "10px" }}
-            />
-          ))
-        ) : (
-          <Typography variant="body1">No images available</Typography>
-        )}
-      </Box>
+      <TurfActions ownerPhone={turf.contactNumber} turfAddress={turfAddress}/>
+
 
       {/* Booking UI */}
       <AvailableSlots turfId={id} turfPrice= {turf.price} openingTime={turf.openingTime} closingTime= {turf.closingTime} />

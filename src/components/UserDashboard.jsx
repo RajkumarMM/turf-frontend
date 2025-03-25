@@ -1,105 +1,140 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import CircularProgress from "@mui/material/CircularProgress";
 import { useAuth } from "../context/AuthContext";
+import CircularProgress from "@mui/material/CircularProgress";
 import TurfCard from "./TurfCard";
 import SearchResults from "./user-dashboard/SearchResults";
 
 const UserDashboard = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true); // State for loading
-  const navigate = useNavigate(); // React Router's navigation hook
-  const { authState, logout } = useAuth(); // Destructure authState and logout
-  
-
- 
-
-  // Function to check if token is expired
-  // const isTokenExpired = (token) => {
-  //   try {
-  //     const decoded = jwtDecode(token);
-  //     return decoded.exp * 1000 < Date.now(); // Convert expiry to milliseconds
-  //   } catch (error) {
-  //     return true; // If decoding fails, assume token is invalid
-  //   }
-  // };
+  const [turfs, setTurfs] = useState([]);
+  const [allTurfs, setAllTurfs] = useState([]); // Store original data
+  const [loading, setLoading] = useState(true);
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [availableCities, setAvailableCities] = useState([]);
+  const [userCity, setUserCity] = useState(localStorage.getItem("userCity") || "");
+  const { logout } = useAuth();
+  const [filters, setFilters] = useState({ price: "", sport: "", distance: "" });
 
   useEffect(() => {
-    const fetchData = async () => {
-      // if (!authState.token || isTokenExpired(authState.token)) {
-      //   logout(); // Logout the user if the token is expired
-      //   navigate("/auth"); // Redirect to login if token is not found
-      //   return;
-      // }
+    fetchAvailableCities();
+    if (userCity) {
+      fetchTurfsByCity(userCity);
+    } else {
+      fetchAllTurfs();
+    }
+  }, [userCity]);
 
-      try {
-        const response = await axios.get("http://localhost:5000/api/dashboard");
-        // console.log(response.data);
-        
-        setData(response.data);
-      } catch (error) {
-        if (error.response?.status === 401) {
-          // Token expired or invalid, redirect to login
-          logout();
-          alert("Session expired. Please log in again.");
-          // navigate("/auth");
-        } else {
-          alert(error.response?.data?.message || "Failed to load dashboard");
+
+  useEffect(() => {
+    applyFilters();
+  }, [filters, allTurfs]); // Apply filters whenever they change
+
+  const fetchAvailableCities = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/turf-cities");
+      setAvailableCities(res.data.cities);
+    } catch (error) {
+      console.error("Error fetching cities:", error);
+    }
+  };
+
+  const fetchAllTurfs = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/dashboard");
+      setAllTurfs(response.data.turfs);
+      setTurfs(response.data.turfs);
+    } catch (error) {
+      handleAuthError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchTurfsByCity = async (city) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://localhost:5000/api/turfs?city=${city}`);
+      setAllTurfs(response.data.turfs);
+      setTurfs(response.data.turfs);
+    } catch (error) {
+      console.error("Error fetching turfs:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUseLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+    setLocationLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords: { latitude, longitude } }) => {
+        try {
+          const { data } = await axios.get(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          );
+          const city = data.address.city || data.address.town || "";
+          if (city) {
+            setUserCity(city);
+            localStorage.setItem("userCity", city);
+            fetchTurfsByCity(city);
+          }
+        } catch (error) {
+          console.error("Location detection failed:", error);
+        } finally {
+          setLocationLoading(false);
         }
-      } finally {
-        setLoading(false); // Set loading state to false after fetching data
+      },
+      (error) => {
+        console.error("Location access error:", error);
+        setLocationLoading(false);
       }
-    };
+    );
+  };
 
-    fetchData();
-  }, [authState.token, logout]);
+  const handleCityChange = (city) => {
+    setUserCity(city);
+    localStorage.setItem("userCity", city);
+  };
 
-  // const handleLogout = () => {
-  //   const confirmLogout = window.confirm("Are you sure you want to log out?");
-    
-  //   if (confirmLogout) {
-  //     logout();
-  
-  //     alert("You have been logged out.");
-  //     // navigate("/auth"); // Redirect to login after logout
-  //   } else {
-  //     alert("Logout canceled.");
-  //   }
-  // };
-  // card navigation
-  // const handleCardClick = (type) => {
-  //   navigate(`/user-dashboard/${type}`); // Navigate to a dynamic route
-  // };
+  const handleAuthError = (error) => {
+    if (error.response?.status === 401) {
+      logout();
+      alert("Session expired. Please log in again.");
+    } else {
+      alert("Failed to load data.");
+    }
+  };
 
-   // Search bar handler
-  //  const handleSearch = () => {
-  //   const today = dayjs(); // Get current date & time
-  //   const selectedDate = dayjs(date, "YYYY-MM-DD"); // Parse selected date
-  //   const selectedTime = dayjs(`${date} ${time}`, "YYYY-MM-DD HH:mm"); // Parse full date & time
-  
-  //   // Check if selected date is in the past
-  //   if (selectedDate.isBefore(today.startOf("day"))) {
-  //     alert("Past dates are not allowed!");
-  //     return;
-  //   }
-  
-  //   // If today’s date is selected, check if the selected time is in the past
-  //   if (selectedDate.isSame(today, "day")) {
-  //     const now = dayjs(); // Current date & time
-  //     if (selectedTime.isBefore(now)) { // Compare actual DateTime objects
-  //       alert("Past time is not allowed for today's searching!");
-  //       return;
-  //     }
-  //   }
-  
-  //   // Proceed with navigation if validation passes
-  //   console.log("Search Criteria:", { location, date, time, amenities, priceRange });
-  //   navigate("/user-dashboard/search-results", {
-  //     state: { location, date, time, amenities, priceRange },
-  //   });
-  // };
-  
+  // **Handle Search Filtering**
+  const handleSearch = (query) => {
+    if (!query) {
+      fetchTurfsByCity(userCity); // If search is empty, refetch turfs for city
+      return;
+    }
+
+    setTurfs((prevTurfs) =>
+      prevTurfs.filter((turf) =>
+        turf.name.toLowerCase().startsWith(query.toLowerCase())
+      )
+    );
+  };
+
+  const applyFilters = () => {
+    let filteredTurfs = allTurfs.filter((turf) =>
+      (filters.price ? turf.price <= parseInt(filters.price) : true) &&
+      (filters.sport ? turf.sport === filters.sport : true)// &&
+      // (filters.distance ? turf.distance <= parseInt(filters.distance) : true)
+    );
+    setTurfs(filteredTurfs);
+  };
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
 
 
   if (loading) {
@@ -107,27 +142,73 @@ const UserDashboard = () => {
       <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
         <CircularProgress />
       </div>
-    ); // Show loading spinner
+    );
   }
 
   return (
-    <>
-      
-      <div className="container">
-        <SearchResults/>
-      {data ? (
-          <div className="row my-2 g-4"> {/* Bootstrap Grid with spacing */}
-          {data.turfs.map((turf, index) => (
-            <div key={index} className="col-md-4 col-sm-6 col-12"> 
+    <div className="container">
+      <div className="d-flex justify-content-between gap-2 align-items-center my-2">
+        {/* Left Side - Dropdown */}
+        <div className="w-30">
+          {!userCity ? (
+            <button
+              className="btn btn-success text-white"
+              onClick={handleUseLocation}
+              disabled={locationLoading}
+            >
+              {locationLoading ? "Detecting Location..." : "Use Your Location"}
+            </button>
+          ) : (
+            <select
+              className="form-select bg-black text-white border-secondary text-capitalize"
+              value={userCity}
+              onChange={(e) => handleCityChange(e.target.value)}
+            >
+              <option value={userCity}>{userCity}</option>
+              {availableCities.map((city, index) => (
+                <option key={index} value={city} className="text-light text-capitalize">
+                  {city}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+
+        {/* Right Side - Search Bar */}
+        <div className="w-60">
+          <SearchResults onSearch={handleSearch} />
+        </div>
+      </div>
+{/* Filters */}
+<div className="filters d-flex gap-3 my-3">
+        <select name="price" className="form-select" onChange={handleFilterChange}>
+          <option value="">Select Price Range</option>
+          <option value="500">Up to 500</option>
+          <option value="1000">Up to 1000</option>
+        </select>
+        {/* <select name="sport" className="form-select" onChange={handleFilterChange}>
+          <option value="">Select Sport</option>
+          <option value="football">Football</option>
+          <option value="cricket">Cricket</option>
+        </select> */}
+        {/* <select name="distance" className="form-select" onChange={handleFilterChange}>
+          <option value="">Select Distance</option>
+          <option value="5">Within 5km</option>
+          <option value="10">Within 10km</option>
+        </select> */}
+      </div>
+      <div className="row my-2 g-4">
+        {turfs.length ? (
+          turfs.map((turf, index) => (
+            <div key={index} className="col-md-4 col-sm-6 col-12">
               <TurfCard turf={turf} />
             </div>
-      ))}
-        </div>
-      ) : (
-        <p>No data available.</p>
-      )}
+          ))
+        ) : (
+          <p>No turfs available.</p>
+        )}
+      </div>
     </div>
-    </>
   );
 };
 
